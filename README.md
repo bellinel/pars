@@ -1,38 +1,73 @@
-# WhatsApp Message Sender
+# Парсер недвижимости
 
-A Python script that sends messages to WhatsApp using the GreenAPI service.
+Проект для автоматического сбора и мониторинга объявлений о недвижимости с различных площадок (OLX, Krisha.kz) с отправкой уведомлений в WhatsApp.
 
-## Features
+## Функциональность
 
-- Asynchronous message sending using aiohttp
-- Support for both individual and group chats
-- Simple and easy to use API
+- Парсинг объявлений с OLX и Krisha.kz
+- Фильтрация объявлений по заданным параметрам
+- Сохранение данных в SQLite базу данных
+- Отправка уведомлений о новых объявлениях в WhatsApp
+- Автоматическое обновление данных
 
-## Requirements
+## Технологии
 
 - Python 3.7+
-- aiohttp
-- asyncio
+- SQLAlchemy для работы с базой данных
+- aiohttp для асинхронных HTTP запросов
+- Selenium для парсинга динамических страниц
+- GreenAPI для отправки сообщений в WhatsApp
 
-## Installation
+## Установка
 
+1. Клонируйте репозиторий:
 ```bash
-pip install aiohttp
+git clone https://github.com/bellinel/pars.git
+cd pars
 ```
 
-## Usage
+2. Установите зависимости:
+```bash
+pip install -r requirements.txt
+```
 
+3. Создайте файл .env на основе .env.example и заполните необходимые переменные окружения:
+```bash
+cp .env.example .env
+```
+
+## Конфигурация
+
+В файле .env необходимо указать:
+- API ключи для GreenAPI
+- Параметры для парсинга (URL, фильтры)
+- Настройки базы данных
+
+## Использование
+
+1. Запустите основной скрипт:
+```bash
+python main.py
+```
+
+2. Для отправки тестового сообщения в WhatsApp:
 ```python
 import asyncio
 from send_message import send_whatsapp_message
 
-# Send a test message
-asyncio.run(send_whatsapp_message("Your message here"))
+asyncio.run(send_whatsapp_message("Тестовое сообщение"))
 ```
 
-## Configuration
+## Структура проекта
 
-Update the following in `send_message.py`:
-- API URL
-- Instance ID
-- Chat ID (for individual or group chats) 
+- `main.py` - основной скрипт для запуска парсера
+- `olx.py` - парсер для OLX
+- `krisha.py` - парсер для Krisha.kz
+- `send_message.py` - модуль для отправки сообщений в WhatsApp
+- `database/` - модули для работы с базой данных
+  - `engine.py` - настройка подключения к БД
+  - `orm.py` - модели данных
+
+## Лицензия
+
+MIT 
