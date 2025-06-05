@@ -33,4 +33,12 @@ ENV/
 
 # OS
 .DS_Store
+Thumbs.db
+
+# Database
+*.db
+bot.db
+
+# OS
+.DS_Store
 Thumbs.db 
