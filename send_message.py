@@ -23,7 +23,7 @@ async def send_whatsapp_message(text):
 
 
 
-asyncio.run(send_whatsapp_message("test"))
+
 
 
 
