@@ -36,14 +36,14 @@ async def main():
 
     while True:
         # Запуск задач параллельно
-        task_krisha = asyncio.create_task(send_message_and_parse_krisha())
-        task_olx = asyncio.create_task(send_message_and_parse_olx())
+        await send_message_and_parse_krisha()
+        await send_message_and_parse_olx()
 
         # Ждём обе
-        await asyncio.gather(task_krisha, task_olx)
+        
 
         # Интервал перед следующим запуском
-        await asyncio.sleep(30)
+        await asyncio.sleep(10)
 
 if __name__ == "__main__":
     asyncio.run(main())

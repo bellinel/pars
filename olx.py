@@ -1,3 +1,4 @@
+import asyncio
 import tempfile
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -16,11 +17,13 @@ async def olx_parse():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument(f'--user-data-dir={tempfile.mkdtemp()}')
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36")
     driver = webdriver.Chrome(service=Service(ChromeDriverManager(driver_version="135").install()), options=options)
     driver.get("https://www.olx.kz/nedvizhimost/prodazha-kvartiry/taldykorgan/?search%5Bfilter_enum_tipsobstvennosti%5D%5B0%5D=ot_hozyaina&search%5Bfilter_enum_tip_zhilya%5D%5B0%5D=vtorichnyy_rynok")
     
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
-    apartment = driver.find_element(By.CLASS_NAME, "listing-grid-container.css-d4ctjd").find_element(By.CSS_SELECTOR, "div.css-l9drzq")
+    # apartment = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "listing-grid-container.css-d4ctjd")))
+    apartment = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.css-l9drzq")))
     name = apartment.find_element(By.CLASS_NAME, "css-1g61gc2").text
     price = apartment.find_element(By.CLASS_NAME, "css-uj7mm0").text.split(".")[0]
     card_id = apartment.get_attribute("id")
@@ -34,5 +37,7 @@ async def olx_parse():
     result = f"{name}\n{price}\n{url}\n"
     await update_site_id_olx(int(card_id))
     driver.quit()
+    print(result)
     return result
 
+asyncio.run(olx_parse())
