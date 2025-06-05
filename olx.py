@@ -39,5 +39,3 @@ async def olx_parse():
     driver.quit()
     print(result)
     return result
-
-asyncio.run(olx_parse())

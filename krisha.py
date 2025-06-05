@@ -49,6 +49,7 @@ async def parse_krisha():
     result = f"{name}\n{price}\n{link}\n{address}\n"
     await update_site_id_krisha(int(card_id))
     driver.quit()
+    print(result)
     return result
 
 
