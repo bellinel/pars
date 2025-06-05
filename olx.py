@@ -16,7 +16,7 @@ async def olx_parse():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument(f'--user-data-dir={tempfile.mkdtemp()}')
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager(version="135").install()), options=options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager(driver_version="135").install()), options=options)
     driver.get("https://www.olx.kz/nedvizhimost/prodazha-kvartiry/taldykorgan/?search%5Bfilter_enum_tipsobstvennosti%5D%5B0%5D=ot_hozyaina&search%5Bfilter_enum_tip_zhilya%5D%5B0%5D=vtorichnyy_rynok")
     
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "body")))

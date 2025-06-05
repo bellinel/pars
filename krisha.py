@@ -17,7 +17,7 @@ async def parse_krisha():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument(f'--user-data-dir={tempfile.mkdtemp()}')
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager(version="135").install()), options=options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager(driver_version="135").install()), options=options)
     # открываем сайт
     driver.get("https://krisha.kz/prodazha/kvartiry/taldykorgan/?das[who]=1")
     
