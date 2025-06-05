@@ -13,11 +13,11 @@ from database.orm import add_site_id_krisha, get_site_id_krisha, update_site_id_
 
 async def parse_krisha():
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
+    options.add_argument("--headless=new")
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument(f'--user-data-dir={tempfile.mkdtemp()}')
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager(version="135").install()), options=options)
     # открываем сайт
     driver.get("https://krisha.kz/prodazha/kvartiry/taldykorgan/?das[who]=1")
     
@@ -50,5 +50,9 @@ async def parse_krisha():
     await update_site_id_krisha(int(card_id))
     driver.quit()
     return result
+
+
+asyncio.run(parse_krisha())
+
     
         
