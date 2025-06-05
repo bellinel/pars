@@ -1,5 +1,4 @@
-import time
-import asyncio
+import tempfile
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -16,6 +15,7 @@ async def olx_parse():
     options.add_argument("--headless")
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
+    options.add_argument(f'--user-data-dir={tempfile.mkdtemp()}')
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     driver.get("https://www.olx.kz/nedvizhimost/prodazha-kvartiry/taldykorgan/?search%5Bfilter_enum_tipsobstvennosti%5D%5B0%5D=ot_hozyaina&search%5Bfilter_enum_tip_zhilya%5D%5B0%5D=vtorichnyy_rynok")
     

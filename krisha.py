@@ -1,4 +1,5 @@
 import asyncio
+import tempfile
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -15,6 +16,8 @@ async def parse_krisha():
     options.add_argument("--headless")
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
+    options.add_argument(f'--user-data-dir={tempfile.mkdtemp()}')
+
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     # открываем сайт
     driver.get("https://krisha.kz/prodazha/kvartiry/taldykorgan/?das[who]=1")
