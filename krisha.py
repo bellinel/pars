@@ -52,7 +52,6 @@ async def parse_krisha():
     return result
 
 
-asyncio.run(parse_krisha())
 
     
         

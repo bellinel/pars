@@ -31,7 +31,8 @@ async def send_message_and_parse_olx():
         print("Ошибка в olx:", e)
 
 async def main():
-    await db.init()  # Один раз
+    await db.init()
+    print("База данных инициализирована")
 
     while True:
         # Запуск задач параллельно
