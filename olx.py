@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-from database.orm import get_site_id_olx, add_site_id_olx, update_site_id_olx
+from database.orm import get_site_url_olx, update_site_url_olx
 
 
 async def olx_parse():
@@ -33,16 +33,17 @@ async def olx_parse():
         apartment = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.css-l9drzq")))
         name = apartment.find_element(By.CLASS_NAME, "css-1g61gc2").text
         price = apartment.find_element(By.CLASS_NAME, "css-uj7mm0").text.split(".")[0]
-        card_id = apartment.get_attribute("id")
-        
-        current_id = await get_site_id_olx()
-        
-        if str(card_id) == str(current_id):
-            print("ID совпадает OLX")
-            return None
+    
+            
         url = apartment.find_element(By.CLASS_NAME, "css-u2ayx9").find_element(By.TAG_NAME, "a").get_attribute("href")
+        current_url = await get_site_url_olx()
+
+        if str(url) == str(current_url):
+            print("URL совпадает OLX")
+            return None
+
         result = f"{name}\n{price}\n{url}\n"
-        await update_site_id_olx(int(card_id))
+        await update_site_url_olx(url)
         driver.quit()
         print(result)
         return result

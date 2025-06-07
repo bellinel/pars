@@ -67,8 +67,7 @@ class OlxId(Base):
     __tablename__ = "olx_id"
 
     id = Column(Integer, primary_key=True)
-    site_id = Column(Integer, nullable=False)
-
+    site_url = Column(String, nullable=False)
 
 
 

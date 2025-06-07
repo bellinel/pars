@@ -30,7 +30,7 @@ async def send_whatsapp_message(text):
             print(response_text)
 
 
-asyncio.run(send_whatsapp_message("test"))
+# asyncio.run(send_whatsapp_message("test"))
 
 
 

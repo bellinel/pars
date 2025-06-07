@@ -29,16 +29,9 @@ async def get_site_id_krisha() -> int:
             return result.scalar_one_or_none()
 
 
-async def add_site_id_olx(site_id: int) -> OlxId:
-      db = Database()
-
-      async with db.session_factory() as session:
-            id = OlxId(site_id=site_id)
-            session.add(id)
-            await session.commit()  
 
 
-async def update_site_id_olx(site_id: int):
+async def update_site_url_olx(site_url: str):
     db = Database()
 
     async with db.session_factory() as session:  # type: AsyncSession
@@ -47,12 +40,12 @@ async def update_site_id_olx(site_id: int):
         olx_entry = result.scalar_one_or_none()
 
         if olx_entry:
-            if olx_entry.site_id == site_id:
-                print("ID совпадает — обновление не требуется")
+            if olx_entry.site_url == site_url:
+                print("URL совпадает — обновление не требуется")
                 return None
-            olx_entry.site_id = site_id
+            olx_entry.site_url = site_url
         else:
-            session.add(OlxId(site_id=site_id))
+            session.add(OlxId(site_url=site_url))
 
         await session.commit()
 
@@ -76,11 +69,11 @@ async def update_site_id_krisha(site_id: int):
             await session.commit()  
 
 
-async def get_site_id_olx() -> int:
+async def get_site_url_olx() -> int:
       db = Database()
 
       async with db.session_factory() as session:
-            query = select(OlxId.site_id)
+            query = select(OlxId.site_url)
             result = await session.execute(query)
             return result.scalar_one_or_none()
 
