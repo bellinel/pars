@@ -8,12 +8,14 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-
+import shutil
 from database.orm import add_site_id_krisha, get_site_id_krisha, update_site_id_krisha
 
 async def parse_krisha():
+    prefs = {"profile.managed_default_content_settings.images": 2}
+
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless=new")
+    options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
@@ -22,6 +24,7 @@ async def parse_krisha():
     options.add_argument("--disable-extensions")
     options.add_argument("--disable-dev-tools")
     options.add_argument("--remote-debugging-port=0")
+    options.add_experimental_option("prefs", prefs)
     
 
     # Запускаем Chrome
@@ -52,25 +55,26 @@ async def parse_krisha():
                 By.CLASS_NAME, "label.label--yellow.label-user-owner"
             )
         except:
+            print("Не от хозяина")
             return None
 
-        name = apartment.find_element(By.CLASS_NAME, "a-card__header-left").text
-        price = apartment.find_element(By.CLASS_NAME, "a-card__price").text
-        address = apartment.find_element(By.CLASS_NAME, "a-card__subtitle").text
+        
         link = apartment.find_element(By.CLASS_NAME, "a-card__header-left").find_element(
             By.TAG_NAME, "a"
         ).get_attribute("href")
 
-        result = f"{name}\n{price}\n{link}\n{address}\n"
+        result = f"{link}"
         await update_site_id_krisha(int(card_id))
-        print(result)
+        
         return result
 
     finally:
         # Гарантируем закрытие драйвера даже при ошибке
         try:
             driver.quit()
+            
         except:
+            
             pass
 
 
