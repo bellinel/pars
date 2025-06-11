@@ -1,6 +1,5 @@
 import asyncio
 import tempfile
-import shutil
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -23,7 +22,6 @@ async def olx_parse():
     options.add_argument("--disable-extensions")
     options.add_argument("--disable-dev-tools")
     options.add_argument("--remote-debugging-port=0")
-    options.add_argument(f'--user-data-dir={tempfile.mkdtemp()}')
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36")
     try:
         driver = webdriver.Chrome(service=Service(ChromeDriverManager(driver_version="135").install()), options=options)
@@ -40,18 +38,17 @@ async def olx_parse():
         current_url = await get_site_url_olx()
 
         if str(url) == str(current_url):
-            print("URL совпадает OLX")
+            
             return None
 
         result = f"{name}\n{price}\n{url}\n"
         await update_site_url_olx(url)
-        driver.quit()
-        print(result)
+        
+        
         return result
     
     finally:
         try:
             driver.quit()
-            shutil.rmtree(temp_dir, ignore_errors=True)
         except:
             pass
