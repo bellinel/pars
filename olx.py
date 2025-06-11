@@ -1,5 +1,6 @@
 import asyncio
 import tempfile
+import shutil
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -51,5 +52,6 @@ async def olx_parse():
     finally:
         try:
             driver.quit()
+            shutil.rmtree(temp_dir, ignore_errors=True)
         except:
             pass
