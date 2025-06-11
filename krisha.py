@@ -1,6 +1,7 @@
 import asyncio
 import tempfile
 import time
+import shutil
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -70,6 +71,7 @@ async def parse_krisha():
         # Гарантируем закрытие драйвера даже при ошибке
         try:
             driver.quit()
+            shutil.rmtree(temp_dir, ignore_errors=True)
         except:
             pass
 
