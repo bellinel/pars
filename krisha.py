@@ -1,7 +1,6 @@
 import asyncio
 import tempfile
 import time
-import shutil
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -23,7 +22,7 @@ async def parse_krisha():
     options.add_argument("--disable-extensions")
     options.add_argument("--disable-dev-tools")
     options.add_argument("--remote-debugging-port=0")
-    options.add_argument(f'--user-data-dir={tempfile.mkdtemp()}')
+    
 
     # Запускаем Chrome
     try:
@@ -71,7 +70,6 @@ async def parse_krisha():
         # Гарантируем закрытие драйвера даже при ошибке
         try:
             driver.quit()
-            shutil.rmtree(temp_dir, ignore_errors=True)
         except:
             pass
 
