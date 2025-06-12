@@ -1,7 +1,7 @@
 
 
 
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from database.engine import Database, OlxId, KrishaId
 
 
@@ -35,20 +35,20 @@ async def update_site_url_olx(site_url: str):
     db = Database()
 
     async with db.session_factory() as session:  # type: AsyncSession
-        query = select(OlxId)
+        # Проверяем, есть ли уже такая ссылка в базе
+        query = select(OlxId).where(OlxId.site_url == site_url)
         result = await session.execute(query)
-        olx_entry = result.scalar_one_or_none()
+        existing = result.scalar_one_or_none()
 
-        if olx_entry:
-            if olx_entry.site_url == site_url:
-                print("URL совпадает — обновление не требуется")
-                return None
-            olx_entry.site_url = site_url
-        else:
-            session.add(OlxId(site_url=site_url))
+        if existing:
+            print("URL уже существует — обновление не требуется")
+            return None
 
+        # Добавляем новую ссылку
+        session.add(OlxId(site_url=site_url))
         await session.commit()
-
+        
+        return True
 
 async def update_site_id_krisha(site_id: int):
         db = Database()
@@ -69,12 +69,19 @@ async def update_site_id_krisha(site_id: int):
             await session.commit()  
 
 
-async def get_site_url_olx() -> int:
-      db = Database()
+async def get_site_url_olx() -> str | None:
+    db = Database()
 
-      async with db.session_factory() as session:
-            query = select(OlxId.site_url)
-            result = await session.execute(query)
-            return result.scalar_one_or_none()
+    async with db.session_factory() as session:
+        query = select(OlxId.site_url).order_by(OlxId.id.desc()).limit(1)
+        result = await session.execute(query)
+        return result.scalar_one_or_none()
 
+async def clear_olx_table():
+    db = Database()
+
+    async with db.session_factory() as session:
+        await session.execute(delete(OlxId))
+        await session.commit()
+        print("Таблица OlxId очищена.")
         
