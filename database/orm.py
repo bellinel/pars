@@ -29,7 +29,23 @@ async def get_site_id_krisha() -> int:
             result = await session.execute(query)
             return result.scalar_one_or_none()
 
+async def update_site_id_krisha(site_id: int):
+        db = Database()
 
+        async with db.session_factory() as session:  # type: AsyncSession
+            query = select(KrishaId)
+            result = await session.execute(query)
+            krisha_entry = result.scalar_one_or_none()
+
+            if krisha_entry:
+                if krisha_entry.site_id == site_id:
+                    print("ID совпадает — обновление не требуется")
+                    return None
+                krisha_entry.site_id = site_id
+            else:
+                session.add(KrishaId(site_id=site_id))
+
+            await session.commit()  
 
 
 async def update_site_url_olx(site_url: str):
