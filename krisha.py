@@ -69,13 +69,8 @@ async def parse_krisha():
         return result
 
     finally:
-        # Гарантируем закрытие драйвера даже при ошибке
-        try:
-            driver.quit()
-            
-        except:
-            
-            pass
+        driver.quit()
+      
 
 
 
