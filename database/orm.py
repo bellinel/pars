@@ -3,6 +3,7 @@
 
 from sqlalchemy import select, delete
 from database.engine import Database, OlxId, KrishaId
+from sqlalchemy.exc import IntegrityError
 
 
 async def add_site_id_krisha(site_id: int):
