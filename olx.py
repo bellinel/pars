@@ -48,8 +48,5 @@ async def olx_parse():
         
     
     finally:
-        try:
-            driver.quit()
-            
-        except:
-            pass
+        driver.quit()
+
