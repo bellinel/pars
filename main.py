@@ -10,8 +10,7 @@ from database.orm import clear_olx_table
 
 db = Database()
 
-# Путь к файлу с временем последней очистки берём из env или дефолт
-LAST_CLEAR_FILE = os.getenv("LAST_CLEAR_FILE", "last_clear.txt")
+LAST_CLEAR_FILE = "last_clear.txt"  # просто файл в текущей папке
 CLEAR_INTERVAL = timedelta(hours=24)
 
 
@@ -69,7 +68,6 @@ async def main_loop():
     await db.init()
     print("База данных инициализирована")
 
-    # Запускаем очистку в фоне
     asyncio.create_task(periodic_clear())
 
     while True:
