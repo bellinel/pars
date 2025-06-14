@@ -1,4 +1,6 @@
 import asyncio
+import os
+from datetime import datetime, timedelta
 
 from database.engine import Database
 from olx import olx_parse
@@ -6,18 +8,41 @@ from krisha import parse_krisha
 from send_message import send_whatsapp_message
 from database.orm import clear_olx_table
 
-
-
 db = Database()
 
+# Путь к файлу с временем последней очистки берём из env или дефолт
+LAST_CLEAR_FILE = os.getenv("LAST_CLEAR_FILE", "last_clear.txt")
+CLEAR_INTERVAL = timedelta(hours=24)
 
 
+def read_last_clear_time():
+    if not os.path.exists(LAST_CLEAR_FILE):
+        return None
+    try:
+        with open(LAST_CLEAR_FILE, "r") as f:
+            content = f.read().strip()
+            return datetime.fromisoformat(content)
+    except Exception:
+        return None
+
+
+def write_last_clear_time(dt: datetime):
+    with open(LAST_CLEAR_FILE, "w") as f:
+        f.write(dt.isoformat())
 
 
 async def periodic_clear():
     while True:
-        await clear_olx_table()
-        await asyncio.sleep(24 * 60 * 60)
+        last_clear = read_last_clear_time()
+        now = datetime.now()
+        if not last_clear or (now - last_clear) >= CLEAR_INTERVAL:
+            print(f"Очистка базы в {now.isoformat()}")
+            await clear_olx_table()
+            write_last_clear_time(now)
+        else:
+            remaining = CLEAR_INTERVAL - (now - last_clear)
+            print(f"Очистка не требуется, следующий запуск через {remaining}")
+        await asyncio.sleep(60)  # Проверяем каждую минуту
 
 
 async def send_message_and_parse_krisha():
@@ -29,6 +54,7 @@ async def send_message_and_parse_krisha():
     except Exception as e:
         print("Ошибка в krisha:", e)
 
+
 async def send_message_and_parse_olx():
     try:
         olx = await olx_parse()
@@ -38,22 +64,35 @@ async def send_message_and_parse_olx():
     except Exception as e:
         print("Ошибка в olx:", e)
 
-async def main():
+
+async def main_loop():
     await db.init()
     print("База данных инициализирована")
+
+    # Запускаем очистку в фоне
     asyncio.create_task(periodic_clear())
+
     while True:
-        # Запуск задач параллельно
-        await send_message_and_parse_krisha()
-        await asyncio.sleep(5)
-        await send_message_and_parse_olx()
-        await asyncio.sleep(5)
+        try:
+            await send_message_and_parse_krisha()
+            await asyncio.sleep(5)
+            await send_message_and_parse_olx()
+            await asyncio.sleep(5)
+        except Exception as e:
+            print(f"Ошибка в основном цикле: {e}")
+            print("Перезапуск цикла через 5 секунд...")
+            await asyncio.sleep(5)
 
-        # Ждём обе
-        
 
-        # Интервал перед следующим запуском
-        
+async def main():
+    while True:
+        try:
+            await main_loop()
+        except Exception as e:
+            print(f"Ошибка в main: {e}")
+            print("Перезапуск main через 5 секунд...")
+            await asyncio.sleep(5)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
