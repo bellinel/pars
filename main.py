@@ -82,15 +82,9 @@ async def main_loop():
             await asyncio.sleep(5)
 
 
-async def main():
-    while True:
-        try:
-            await main_loop()
-        except Exception as e:
-            print(f"Ошибка в main: {e}")
-            print("Перезапуск main через 5 секунд...")
-            await asyncio.sleep(5)
+
+
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(main_loop())
