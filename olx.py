@@ -45,10 +45,14 @@ async def olx_parse():
             return result
         else:
             return None
-        
-        
+
+    except Exception:
+        print("OLX ERROR")
+        return None
     
     finally:
         if driver:
             driver.quit()
-
+        
+            
+        
