@@ -67,6 +67,10 @@ async def parse_krisha():
         await update_site_id_krisha(int(card_id))
         
         return result
+        
+    except Exception:
+        print("KRISHA ERROR")
+        return None
 
     finally:
         if driver:
