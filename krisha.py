@@ -25,7 +25,7 @@ async def parse_krisha():
     options.add_argument("--disable-dev-tools")
     options.add_argument("--remote-debugging-port=0")
     options.add_experimental_option("prefs", prefs)
-    
+    driver = None
 
     # Запускаем Chrome
     try:
