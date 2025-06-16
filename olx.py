@@ -25,6 +25,7 @@ async def olx_parse():
     options.add_argument("--remote-debugging-port=0")
     
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36")
+    driver = None
     try:
         driver = webdriver.Chrome(service=Service(ChromeDriverManager(driver_version="135").install()), options=options)
         driver.get("https://www.olx.kz/nedvizhimost/prodazha-kvartiry/taldykorgan/?search%5Bfilter_enum_tipsobstvennosti%5D%5B0%5D=ot_hozyaina&search%5Bfilter_enum_tip_zhilya%5D%5B0%5D=vtorichnyy_rynok")
