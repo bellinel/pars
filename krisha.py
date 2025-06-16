@@ -69,7 +69,8 @@ async def parse_krisha():
         return result
 
     finally:
-        driver.quit()
+        if driver:
+            driver.quit()
       
 
 
