@@ -48,5 +48,6 @@ async def olx_parse():
         
     
     finally:
-        driver.quit()
+        if driver:
+            driver.quit()
 
