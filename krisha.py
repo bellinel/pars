@@ -8,31 +8,14 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-import shutil
-from database.orm import add_site_id_krisha, get_site_id_krisha, update_site_id_krisha
 
-async def parse_krisha():
-    prefs = {"profile.managed_default_content_settings.images": 2}
+from database.orm import get_site_id_krisha, update_site_id_krisha
 
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-gpu")
-    options.add_argument("--disable-background-networking")
-    options.add_argument("--disable-software-rasterizer")
-    options.add_argument("--disable-extensions")
-    options.add_argument("--disable-dev-tools")
-    options.add_argument("--remote-debugging-port=0")
-    options.add_experimental_option("prefs", prefs)
-    driver = None
-
+async def parse_krisha(driver):
+    
+    
     # Запускаем Chrome
     try:
-        driver = webdriver.Chrome(
-            service=Service(ChromeDriverManager(driver_version="135").install()),
-            options=options
-        )
 
         driver.get("https://krisha.kz/prodazha/kvartiry/taldykorgan/?das[who]=1")
         WebDriverWait(driver, 10).until(
@@ -67,16 +50,30 @@ async def parse_krisha():
         await update_site_id_krisha(int(card_id))
         
         return result
-        
     except Exception:
         print("KRISHA ERROR")
         return None
+    
+            
+        
+def create_krisha_driver():
+    options = webdriver.ChromeOptions()
+    prefs = {"profile.managed_default_content_settings.images": 2}
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-background-networking")
+    options.add_argument("--disable-software-rasterizer")
+    options.add_argument("--disable-extensions")
+    options.add_argument("--disable-dev-tools")
+    options.add_argument("--remote-debugging-port=0")
+    options.add_experimental_option("prefs", prefs)
 
-    finally:
-        if driver:
-            driver.quit()
-      
-
+    return webdriver.Chrome(
+        service=Service(ChromeDriverManager(driver_version="135").install()),
+        options=options
+    )
 
 
 
